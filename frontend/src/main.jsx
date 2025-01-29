@@ -2,11 +2,17 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
+import HomePage from "./pages/HomePage";
+import AuthPage from "./pages/AuthPage";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <h1>Workout Tracker</h1>,
+    element: <HomePage />,
+  },
+  {
+    path: "/auth",
+    element: <AuthPage />,
   },
 ]);
 
