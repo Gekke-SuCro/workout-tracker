@@ -1,5 +1,3 @@
 .idea/
 .vscode/
 *.iml
-.env
-frontend/.env.development
