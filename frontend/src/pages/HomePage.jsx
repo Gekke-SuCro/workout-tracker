@@ -4,7 +4,7 @@ const HomePage = () => {
   return (
     <div>
       <h1>Workout Tracker</h1>
-      <Link to="/auth">login...</Link>
+      <Link to="/login">login...</Link>
     </div>
   );
 };
