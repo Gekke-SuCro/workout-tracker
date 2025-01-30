@@ -14,6 +14,6 @@
   }
 
   .form-error-label {
-    @apply text-red-950;
+    @apply text-red-500;
   }
 }
