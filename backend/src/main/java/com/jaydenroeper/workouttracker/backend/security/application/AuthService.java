@@ -4,5 +4,5 @@ import com.jaydenroeper.workouttracker.backend.security.presentation.dto.LoginRe
 
 public interface AuthService {
 
-    String login(LoginRequestDto loginRequestDto);
+    String verify(LoginRequestDto loginRequestDto);
 }

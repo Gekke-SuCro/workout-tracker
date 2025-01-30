@@ -16,20 +16,16 @@ public class JwtAuthService implements AuthService {
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    private JwtTokenProvider JwtTokenProvider;
+    private JwtTokenProvider jwtTokenProvider;
 
     @Override
-    public String login(LoginRequestDto loginRequestDto) {
+    public String verify(LoginRequestDto loginRequestDto) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 loginRequestDto.getUsername(),
                 loginRequestDto.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        String token = JwtTokenProvider.generateToken(authentication);
-
-        System.out.println(token);
-
-        return token;
+        return jwtTokenProvider.generateToken(authentication);
     }
 }

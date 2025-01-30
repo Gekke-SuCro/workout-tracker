@@ -17,7 +17,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.jaydenroeper.workouttracker.backend.security.application.JwtAuthenticationEntryPoint;
-import com.jaydenroeper.workouttracker.backend.security.application.JwtAuthenticationFilter;
+import com.jaydenroeper.workouttracker.backend.security.application.JwtFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -31,7 +31,7 @@ public class SecurityConfig {
     private JwtAuthenticationEntryPoint authenticationEntryPoint;
 
     @Autowired
-    private JwtAuthenticationFilter authenticationFilter;
+    private JwtFilter authenticationFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
