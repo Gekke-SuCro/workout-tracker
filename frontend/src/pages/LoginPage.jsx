@@ -1,6 +1,9 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import "../assets/styles/formStyles.css";
+import { AuthAPI } from "../api/authApi";
 
 const LoginPage = () => {
   const {
@@ -9,8 +12,23 @@ const LoginPage = () => {
     formState: { errors },
   } = useForm({ mode: "onBlur" });
 
-  const onSubmit = () => {
-    console.log("Logging in");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const onSubmit = async (data) => {
+    setLoading(true);
+
+    try {
+      const authResponse = await AuthAPI.login(data.username, data.password);
+      console.log(authResponse);
+      if (authResponse && authResponse.accesToken) {
+        navigate("/");
+      }
+    } catch (error) {
+      console.error("Login failed!", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -31,6 +49,9 @@ const LoginPage = () => {
         <div className="flex flex-col gap-4 py-8">
           {/* Username Input */}
           <div>
+            <label htmlFor="username" className="form-label">
+              Username
+            </label>
             <input
               {...register("username", {
                 required: "Username is required",
@@ -47,6 +68,9 @@ const LoginPage = () => {
 
           {/* Password Input */}
           <div>
+            <label htmlFor="password" className="form-label">
+              Password
+            </label>
             <input
               {...register("password", {
                 required: "Password is required",
@@ -65,10 +89,15 @@ const LoginPage = () => {
         {/* Submit Button */}
         <div className="flex justify-center md:justify-start">
           <button
+            disabled={loading}
             type="submit"
-            className={`mt-4 px-6 py-2 rounded-lg transition bg-blue-500 text-white hover:bg-blue-600`}
+            className={`mt-4 px-6 py-2 rounded-lg transition ${
+              loading
+                ? "bg-neutral-500"
+                : "bg-blue-500 text-white hover:bg-blue-600"
+            }`}
           >
-            Login
+            {loading ? "Logging in..." : "Login"}
           </button>
         </div>
       </form>
