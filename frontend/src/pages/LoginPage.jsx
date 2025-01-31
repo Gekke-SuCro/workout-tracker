@@ -1,13 +1,13 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { AuthAPI } from "../api/authApi";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../assets/styles/formStyles.css";
+import { useAuth } from "../contexts/authContext";
 
 const LoginPage = () => {
+  const { login } = useAuth();
   const {
     register,
     handleSubmit,
@@ -22,9 +22,7 @@ const LoginPage = () => {
     const authToast = toast.loading("Logging in...");
 
     try {
-      const authResponse = await AuthAPI.login(data.username, data.password);
-      const username = authResponse.data;
-      console.log(username);
+      await login(data.username, data.password);
 
       toast.update(authToast, {
         render: "Welcome back! 🎉",
@@ -38,7 +36,6 @@ const LoginPage = () => {
       navigate("/");
     } catch (error) {
       console.error(error.message);
-
       toast.update(authToast, {
         render: error.message,
         type: "error",

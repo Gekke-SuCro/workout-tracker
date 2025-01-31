@@ -1,10 +1,17 @@
-import { Link } from "react-router-dom";
+import { useAuth } from "../contexts/authContext";
 
 const HomePage = () => {
+  const { logout } = useAuth();
+
   return (
-    <div>
+    <div className="flex flex-col grow justify-center items-center min-h-screen">
       <h1>Workout Tracker</h1>
-      <Link to="/login">login...</Link>
+
+      <div className="py-8">
+        <button onClick={logout} className="px-6 py-2 bg-red-500 rounded-xl">
+          Logout
+        </button>
+      </div>
     </div>
   );
 };

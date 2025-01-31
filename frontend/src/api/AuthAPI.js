@@ -3,13 +3,7 @@ import api from "./configs/apiConfig";
 export const AuthAPI = {
   login: async function (username, password) {
     try {
-      const response = await api.post("/auth/login", {
-        username: username,
-        password: password,
-      });
-
-      //   Store token in localstorage (for now)
-      localStorage.setItem("token", response.data.accesToken);
+      const response = await api.post("/auth/login", { username, password });
 
       return response.data;
     } catch (error) {
