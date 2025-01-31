@@ -5,9 +5,9 @@ import {
   Navigate,
   RouterProvider,
 } from "react-router-dom";
-import { AuthProvider, useAuth } from "./contexts/authContext";
-import HomePage from "./pages/HomePage";
-import LoginPage from "./pages/LoginPage";
+import { AuthProvider, useAuth } from "./context/authContext";
+import HomePage from "./views/pages/HomePage";
+import LoginPage from "./views/pages/LoginPage";
 import "./index.css";
 
 // eslint-disable-next-line react-refresh/only-export-components, react/prop-types

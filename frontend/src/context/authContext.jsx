@@ -10,8 +10,10 @@ export const AuthProvider = ({ children }) => {
   );
 
   const login = async (username, password) => {
-    await AuthService.login(username, password);
-    setIsAuthenticated(true);
+    const succes = await AuthService.login(username, password);
+    if (succes) {
+      setIsAuthenticated(true);
+    }
   };
 
   const logout = () => {

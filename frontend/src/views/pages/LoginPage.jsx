@@ -3,8 +3,8 @@ import { useNavigate, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import "../assets/styles/formStyles.css";
-import { useAuth } from "../contexts/authContext";
+import "../../assets/styles/formStyles.css";
+import { useAuth } from "../../context/authContext";
 
 const LoginPage = () => {
   const { login } = useAuth();
