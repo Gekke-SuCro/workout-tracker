@@ -1,13 +1,11 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../../assets/styles/formStyles.css";
-import { useAuth } from "../../context/authContext";
 
-const LoginPage = () => {
-  const { login } = useAuth();
+const RegisterPage = () => {
   const {
     register,
     handleSubmit,
@@ -15,34 +13,14 @@ const LoginPage = () => {
   } = useForm({ mode: "onBlur" });
 
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
   const onSubmit = async (data) => {
     setLoading(true);
-    const authToast = toast.loading("Logging in...");
 
     try {
-      await login(data.username, data.password);
-
-      toast.update(authToast, {
-        render: "Welcome back! 🎉",
-        type: "success",
-        isLoading: false,
-        closeButton: true,
-        autoClose: 3000,
-      });
-
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      navigate("/");
+      console.log(data);
     } catch (error) {
       console.error(error.message);
-      toast.update(authToast, {
-        render: error.message,
-        type: "error",
-        isLoading: false,
-        closeButton: true,
-        autoClose: 3000,
-      });
     } finally {
       setLoading(false);
     }
@@ -63,24 +41,60 @@ const LoginPage = () => {
         onSubmit={handleSubmit(onSubmit)}
         className="p-8 md:shadow-xl md:p-16 rounded-xl"
       >
-        <h1 className="title mb-4">Login</h1>
+        <h1 className="title mb-4">Sign Up</h1>
 
         <p>
-          Not a member?{" "}
+          Already have an account?{" "}
           <span className="text-blue-500">
-            <Link to="/register">Sign Up</Link>
+            <Link to="/login">Login</Link>
           </span>
         </p>
 
         <div className="flex flex-col gap-4 py-8">
+          {/* Firstname Input */}
+          <div>
+            <label htmlFor="firstname" className="form-label">
+              First name
+            </label>
+            <input
+              {...register("firstname")}
+              type="text"
+              id="firstname"
+              placeholder="John"
+              className="form-input-box"
+            />
+          </div>
+
+          {/* Lastname Input */}
+          <div>
+            <label htmlFor="lastname" className="form-label">
+              Last name
+            </label>
+            <input
+              {...register("lastname")}
+              type="text"
+              id="lastname"
+              placeholder="Doe"
+              className="form-input-box"
+            />
+          </div>
+
           {/* Username Input */}
           <div>
             <label htmlFor="username" className="form-label">
-              Username
+              Username*
             </label>
             <input
               {...register("username", {
                 required: "Username is required",
+                minLength: {
+                  value: 2,
+                  message: "Username must containt at least 2 charachters",
+                },
+                maxLength: {
+                  value: 20,
+                  message: "Username cannot exceed 20 charachter limit",
+                },
               })}
               type="text"
               id="username"
@@ -95,11 +109,19 @@ const LoginPage = () => {
           {/* Password Input */}
           <div>
             <label htmlFor="password" className="form-label">
-              Password
+              Password*
             </label>
             <input
               {...register("password", {
                 required: "Password is required",
+                minLength: {
+                  value: 8,
+                  message: "Password must containt at least 8 charachters",
+                },
+                maxLength: {
+                  value: 255,
+                  message: "Password cannot exceed 255 charachter limit",
+                },
               })}
               type="password"
               id="password"
@@ -123,7 +145,7 @@ const LoginPage = () => {
                 : "bg-blue-500 text-white hover:bg-blue-600"
             }`}
           >
-            {loading ? "Logging in..." : "Login"}
+            {loading ? "Creating account.." : "Sign Up"}
           </button>
         </div>
       </form>
@@ -131,4 +153,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default RegisterPage;

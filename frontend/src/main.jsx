@@ -9,6 +9,7 @@ import { AuthProvider, useAuth } from "./context/authContext";
 import HomePage from "./views/pages/HomePage";
 import LoginPage from "./views/pages/LoginPage";
 import "./index.css";
+import RegisterPage from "./views/pages/RegisterPage";
 
 // eslint-disable-next-line react-refresh/only-export-components, react/prop-types
 const AuthGuard = ({ children }) => {
@@ -36,6 +37,14 @@ const router = createBrowserRouter([
     element: (
       <LoginGuard>
         <LoginPage />
+      </LoginGuard>
+    ),
+  },
+  {
+    path: "/register",
+    element: (
+      <LoginGuard>
+        <RegisterPage />
       </LoginGuard>
     ),
   },
