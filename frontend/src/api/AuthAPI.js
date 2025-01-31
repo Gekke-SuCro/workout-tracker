@@ -9,12 +9,19 @@ export const AuthAPI = {
       });
 
       //   Store token in localstorage (for now)
-      console.log(response);
       localStorage.setItem("token", response.data.accesToken);
 
       return response.data;
     } catch (error) {
-      throw error.response?.data?.message || "Login failed, try again!";
+      if (error.response) {
+        const status = error.response.status;
+        if (status === 401) {
+          throw new Error("Invalid credentials. Please try again.");
+        } else if (status === 500) {
+          throw new Error("Server error. Please try later.");
+        }
+      }
+      throw new Error("Login failed. Please try again.");
     }
   },
 };

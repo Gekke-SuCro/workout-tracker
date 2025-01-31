@@ -2,8 +2,10 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import "../assets/styles/formStyles.css";
 import { AuthAPI } from "../api/authApi";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import "../assets/styles/formStyles.css";
 
 const LoginPage = () => {
   const {
@@ -17,15 +19,33 @@ const LoginPage = () => {
 
   const onSubmit = async (data) => {
     setLoading(true);
+    const authToast = toast.loading("Logging in...");
 
     try {
       const authResponse = await AuthAPI.login(data.username, data.password);
-      console.log(authResponse);
-      if (authResponse && authResponse.accesToken) {
-        navigate("/");
-      }
+      const username = authResponse.data;
+      console.log(username);
+
+      toast.update(authToast, {
+        render: "Welcome back! 🎉",
+        type: "success",
+        isLoading: false,
+        closeButton: true,
+        autoClose: 3000,
+      });
+
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      navigate("/");
     } catch (error) {
-      console.error("Login failed!", error);
+      console.error(error.message);
+
+      toast.update(authToast, {
+        render: error.message,
+        type: "error",
+        isLoading: false,
+        closeButton: true,
+        autoClose: 3000,
+      });
     } finally {
       setLoading(false);
     }
@@ -33,6 +53,15 @@ const LoginPage = () => {
 
   return (
     <div className="mx-auto sm:max-w-md flex flex-col grow justify-center min-h-svh">
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        newestOnTop
+        closeOnClick
+        pauseOnHover
+        limit={3}
+      />
+
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="p-8 md:shadow-xl md:p-16 rounded-xl"
