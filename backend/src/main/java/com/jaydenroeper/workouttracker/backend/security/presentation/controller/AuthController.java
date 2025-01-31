@@ -16,8 +16,6 @@ import com.jaydenroeper.workouttracker.backend.security.presentation.dto.Registe
 
 import jakarta.validation.Valid;
 
-import com.jaydenroeper.workouttracker.backend.security.domain.Users;
-
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -49,7 +47,7 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody @Valid RegisterRequestDto registerRequestDto) {
         try {
-            Users newUser = authService.register(registerRequestDto);
+            authService.register(registerRequestDto);
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body("User registered successfully!");
         } catch (UsernameNotUniqueException e) {

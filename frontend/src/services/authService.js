@@ -26,6 +26,20 @@ const AuthService = {
     }
   },
 
+  register: async function (firstname, lastname, username, password) {
+    try {
+      const authResponse = await AuthAPI.register(
+        firstname,
+        lastname,
+        username,
+        password
+      );
+      return authResponse.data;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
+
   logout: function () {
     clearToken();
   },

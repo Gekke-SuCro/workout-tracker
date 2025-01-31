@@ -1,11 +1,13 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../../assets/styles/formStyles.css";
+import { useAuth } from "../../context/authContext";
 
 const RegisterPage = () => {
+  const { registerNewUser } = useAuth();
   const {
     register,
     handleSubmit,
@@ -13,14 +15,40 @@ const RegisterPage = () => {
   } = useForm({ mode: "onBlur" });
 
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const onSubmit = async (data) => {
+    console.log(data);
     setLoading(true);
+    const authToast = toast.loading("Creating account...");
 
     try {
-      console.log(data);
+      await registerNewUser(
+        data.firstname,
+        data.lastname,
+        data.username,
+        data.password
+      );
+
+      toast.update(authToast, {
+        render: "Account created, you can now login! 🎉",
+        type: "success",
+        isLoading: false,
+        closeButton: true,
+        autoClose: 3000,
+      });
+
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      navigate("/login");
     } catch (error) {
       console.error(error.message);
+      toast.update(authToast, {
+        render: error.message,
+        type: "error",
+        isLoading: false,
+        closeButton: true,
+        autoClose: 3000,
+      });
     } finally {
       setLoading(false);
     }
