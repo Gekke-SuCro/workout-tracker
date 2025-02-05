@@ -24,7 +24,7 @@ public class JwtTokenProvider {
         return Jwts.builder()
                 .subject(authentication.getName())
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 60 * 60 * 1000)) // 1 hour expiry
+                .expiration(new Date(System.currentTimeMillis() + jwtExpirationMs)) // 1 hour expiry
                 .signWith(getKey())
                 .compact();
     }
