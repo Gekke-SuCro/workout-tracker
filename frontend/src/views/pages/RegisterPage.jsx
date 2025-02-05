@@ -95,18 +95,18 @@ const RegisterPage = () => {
                         </label>
                         <input
                             {...register("firstname", {
-                                required: "First name is required",
+                                required: "First name is required.",
                                 minLength: {
                                     value: NAME_MIN,
-                                    message: `First name must contain at least ${NAME_MIN} characters`,
+                                    message: `First name must contain at least ${NAME_MIN} characters.`,
                                 },
                                 maxLength: {
                                     value: NAME_MAX,
-                                    message: `First name cannot exceed ${NAME_MAX} characters`,
+                                    message: `First name cannot exceed ${NAME_MAX} characters.`,
                                 },
                                 pattern: {
                                     value: new RegExp(NAME_REGEX),
-                                    message: "First name must contain only alphabets without spaces",
+                                    message: "First name must contain only letters without spaces.",
                                 },
                             })}
                             type="text"
@@ -126,18 +126,18 @@ const RegisterPage = () => {
                         </label>
                         <input
                             {...register("lastname", {
-                                required: "Last name is required",
+                                required: "Last name is required.",
                                 minLength: {
                                     value: NAME_MIN,
-                                    message: `Last name must contain at least ${NAME_MIN} characters`,
+                                    message: `Last name must contain at least ${NAME_MIN} characters.`,
                                 },
                                 maxLength: {
                                     value: NAME_MAX,
-                                    message: `Last name cannot exceed ${NAME_MAX} characters`,
+                                    message: `Last name cannot exceed ${NAME_MAX} characters.`,
                                 },
                                 pattern: {
                                     value: new RegExp(NAME_REGEX),
-                                    message: "Last name must contain only alphabets without spaces",
+                                    message: "Last name must contain only letters without spaces.",
                                 },
                             })}
                             type="text"
@@ -160,16 +160,16 @@ const RegisterPage = () => {
                                 required: "Username is required",
                                 minLength: {
                                     value: USERNAME_MIN,
-                                    message: `Username must contain at least ${USERNAME_MIN} characters`,
+                                    message: `Username must contain at least ${USERNAME_MIN} characters.`,
                                 },
                                 maxLength: {
                                     value: USERNAME_MAX,
-                                    message: `Username cannot exceed ${USERNAME_MAX} characters`,
+                                    message: `Username cannot exceed ${USERNAME_MAX} characters.`,
                                 },
                                 pattern: {
                                     value: new RegExp(USERNAME_REGEX),
                                     message:
-                                        "Username must start with a letter and contain only alphanumeric characters with no spaces",
+                                        "Username must start with a letter and can only contain alphanumeric characters without whitespaces.",
                                 },
                             })}
                             type="text"
@@ -192,15 +192,15 @@ const RegisterPage = () => {
                                 required: PASSWORD_REQUIRED,
                                 minLength: {
                                     value: PASSWORD_MIN,
-                                    message: `Password must contain at least ${PASSWORD_MIN} characters`,
+                                    message: `Password must contain at least ${PASSWORD_MIN} characters.`,
                                 },
                                 maxLength: {
                                     value: PASSWORD_MAX,
-                                    message: `Password cannot exceed ${PASSWORD_MAX} characters`,
+                                    message: `Password cannot exceed ${PASSWORD_MAX} characters.`,
                                 },
                                 pattern: {
                                     value: new RegExp(PASSWORD_REGEX),
-                                    message: "Password cannot contain whitespace",
+                                    message: "Password cannot contain whitespace.",
                                 },
                             })}
                             type="password"
@@ -222,7 +222,7 @@ const RegisterPage = () => {
                             {...register("confirmPassword", {
                                 required: "Confirming password is required",
                                 validate: (value) =>
-                                    value === watch("password") || "Passwords do not match",
+                                    value === watch("password") || "Passwords do not match.",
                             })}
                             type="password"
                             id="password-confirm"
