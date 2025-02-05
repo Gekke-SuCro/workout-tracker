@@ -1,0 +1,38 @@
+@import "tailwindcss";
+
+@theme {
+  /* Font Families */
+  --font-primary: "Roboto", "sans-serif";
+  --font-secondary: "Lato", "sans-serif";
+
+  /* Text Sizes */
+
+  /* Colors */
+  /* --color-neutral-50: hsl(0, 0, 96);
+  --color-neutral-950: hsl(0, 0, 9);
+
+  --color-accent-orange-500: hsl(12, 72%, 44%); */
+
+  /* Break Points */
+  --breakpoint-sm: 36em;
+  --breakpoint-md: 48rem;
+  --breakpoint-lg: 64rem;
+  --breakpoint-xl: 80rem;
+  --breakpoint-2xl: 90rem;
+}
+
+@layer base {
+  body {
+    @apply bg-neutral-50 text-neutral-950 leading-relaxed;
+  }
+}
+
+@layer utility {
+  .title {
+    @apply text-4xl font-bold;
+  }
+
+  .form-label {
+    @apply text-sm font-medium text-neutral-600;
+  }
+}
