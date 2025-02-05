@@ -1,10 +1,5 @@
 package com.jaydenroeper.workouttracker.backend.security.presentation.dto;
 
-import lombok.Data;
+public record LoginRequestDto(String username, String password) {
 
-@Data
-public class LoginRequestDto {
-
-    private String username;
-    private String password;
 }

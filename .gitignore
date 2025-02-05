@@ -2,4 +2,4 @@
 .vscode/
 *.iml
 .env
-frontend/.env.development
+frontend/.env.*
