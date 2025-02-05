@@ -2,7 +2,6 @@ package com.jaydenroeper.workouttracker.backend.security.presentation.controller
 
 import com.jaydenroeper.workouttracker.backend.security.application.exception.PasswordsDoNotMatchException;
 import com.jaydenroeper.workouttracker.backend.security.application.exception.UsernameAlreadyTakenException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -22,16 +21,17 @@ import jakarta.validation.Valid;
 @Validated
 public class AuthController {
 
-    @Autowired
-    private AuthService authService;
+    private final AuthService authService;
+
+    public AuthController(AuthService authService) {
+        this.authService = authService;
+    }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequestDto loginRequestDto) {
         try {
             String token = authService.verify(loginRequestDto);
-            AuthResponseDto authResponseDto = new AuthResponseDto();
-            authResponseDto.setAccesToken(token);
-
+            AuthResponseDto authResponseDto = new AuthResponseDto(token);
             return ResponseEntity.ok(authResponseDto);
         } catch (BadCredentialsException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)

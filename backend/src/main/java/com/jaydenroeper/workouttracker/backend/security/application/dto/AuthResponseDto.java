@@ -1,9 +1,5 @@
 package com.jaydenroeper.workouttracker.backend.security.application.dto;
 
-import lombok.Data;
+public record AuthResponseDto(String accesToken) {
 
-@Data
-public class AuthResponseDto {
-
-    private String accesToken;
 }

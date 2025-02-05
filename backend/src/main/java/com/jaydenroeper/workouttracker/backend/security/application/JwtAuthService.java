@@ -2,7 +2,7 @@ package com.jaydenroeper.workouttracker.backend.security.application;
 
 import com.jaydenroeper.workouttracker.backend.security.application.exception.PasswordsDoNotMatchException;
 import com.jaydenroeper.workouttracker.backend.security.application.exception.UsernameAlreadyTakenException;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -18,25 +18,27 @@ import com.jaydenroeper.workouttracker.backend.security.presentation.dto.Registe
 @Service
 public class JwtAuthService implements AuthService {
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final UserRepository userRepository;
+    private final BCryptPasswordEncoder encoder ;
 
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
+    public JwtAuthService(
+            AuthenticationManager authenticationManager,
+            JwtTokenProvider jwtTokenProvider,
+            UserRepository userRepository) {
+        this.authenticationManager = authenticationManager;
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.userRepository = userRepository;
+        this.encoder = new BCryptPasswordEncoder(12);
+    }
 
     @Override
     public String verify(LoginRequestDto loginRequestDto) {
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                loginRequestDto.username(),
-                loginRequestDto.password()));
-
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginRequestDto.username(), loginRequestDto.password())
+        );
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
         return jwtTokenProvider.generateToken(authentication);
     }
 
