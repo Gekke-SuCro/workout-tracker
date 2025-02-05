@@ -24,7 +24,8 @@
 
 - **Password**:
     - required
-    - 8-128 chars
+    - 8-128 chars 
+    - no whitespaces
 
 
 - **Confirm Password**: Must match Password.
