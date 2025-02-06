@@ -1,27 +1,28 @@
 package com.jaydenroeper.workouttracker.backend.security.application;
 
-
 import com.jaydenroeper.workouttracker.backend.security.data.RolesRepository;
 import com.jaydenroeper.workouttracker.backend.security.data.UserRepository;
 import com.jaydenroeper.workouttracker.backend.security.domain.Users;
 import com.jaydenroeper.workouttracker.backend.security.presentation.dto.LoginRequestDto;
 import com.jaydenroeper.workouttracker.backend.security.presentation.dto.RegisterRequestDto;
 import jakarta.transaction.Transactional;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static com.jaydenroeper.workouttracker.backend.utils.TestObjectUtils.createRegisterRequestDto;
-import static com.jaydenroeper.workouttracker.backend.utils.TestObjectUtils.createUser;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import java.util.Optional;
+
+import static com.jaydenroeper.workouttracker.backend.utils.TestObjectUtils.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @Transactional
 public class JwtAuthServiceIntegrationTest {
 
@@ -40,24 +41,33 @@ public class JwtAuthServiceIntegrationTest {
     @Autowired
     private BCryptPasswordEncoder encoder;
 
+    private LoginRequestDto loginRequestDto;
+    private RegisterRequestDto registerRequestDto;
+
+    @BeforeEach
+    void setUp() {
+        loginRequestDto = createLoginRequestDto();
+        registerRequestDto = createRegisterRequestDto();
+    }
+
+    @Test
+    public void verify_shouldThrowBadCredentialsException_whenNotValidCredentials() {
+        assertThrows(BadCredentialsException.class, () -> jwtAuthService.verify(loginRequestDto));
+    }
+
     @Test
     public void verify_shouldReturnToken_whenValidCredentials() {
-        String rawPassword = "password";
-        Users user = createUser();
-        user.setPassword(encoder.encode(rawPassword));
-        userRepository.save(user);
-
-        LoginRequestDto loginRequestDto = new LoginRequestDto(user.getUsername(), rawPassword);
-        String token = jwtAuthService.verify(loginRequestDto);
-
-        assertNotNull(token);
+        userRepository.save(createUser());
+        assertNotNull(jwtAuthService.verify(loginRequestDto));
     }
 
     @Test
     public void register_shouldSaveUser_whenRegistrationIsValid() {
-        RegisterRequestDto registerRequestDto = createRegisterRequestDto();
         Users result = jwtAuthService.register(registerRequestDto);
-
         assertNotNull(result);
+
+        Optional<Users> savedUser = userRepository.findByUsername(registerRequestDto.getUsername());
+        assertTrue(savedUser.isPresent());
+        assertEquals(registerRequestDto.getUsername(), savedUser.get().getUsername());
     }
 }

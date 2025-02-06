@@ -8,26 +8,27 @@ import com.jaydenroeper.workouttracker.backend.security.domain.Roles;
 import com.jaydenroeper.workouttracker.backend.security.domain.Users;
 import com.jaydenroeper.workouttracker.backend.security.presentation.dto.LoginRequestDto;
 import com.jaydenroeper.workouttracker.backend.security.presentation.dto.RegisterRequestDto;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Optional;
 
-import static com.jaydenroeper.workouttracker.backend.utils.TestObjectUtils.createRegisterRequestDto;
+import static com.jaydenroeper.workouttracker.backend.utils.TestObjectUtils.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class JwtAuthServiceTest {
 
     @InjectMocks
@@ -48,16 +49,28 @@ public class JwtAuthServiceTest {
     @Mock
     private RolesRepository rolesRepository;
 
+    private String dummyToken;
+    private LoginRequestDto loginRequestDto;
+    private RegisterRequestDto registerRequestDto;
+
+    @BeforeEach
+    void setup() {
+        dummyToken = "dummyToken";
+        loginRequestDto = createLoginRequestDto();
+        registerRequestDto = createRegisterRequestDto();
+    }
+
+    @Test
+    public void verify_shouldReturnNull_whenNotValidCredentials() {
+        assertNull(jwtAuthService.verify(loginRequestDto));
+    }
+
     @Test
     public void verify_shouldReturnToken_whenValidCredentials() {
-        String dummyToken = "'dummyToken'";
-        LoginRequestDto loginRequestDto = new LoginRequestDto("user", "password");
         Authentication authentication = mock(Authentication.class);
-
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .thenReturn(authentication);
         when(jwtTokenProvider.generateToken(authentication)).thenReturn(dummyToken);
-
         String token = jwtAuthService.verify(loginRequestDto);
 
         assertEquals(dummyToken, token);
@@ -65,36 +78,31 @@ public class JwtAuthServiceTest {
 
     @Test
     public void register_shouldThrowUsernameAlreadyExistException_whenUsernameExists() {
-        RegisterRequestDto registerRequestDto = createRegisterRequestDto();
-        when(userRepository.findByUsername(registerRequestDto.getUsername())).thenReturn(Optional.of(mock(Users.class)));
+        when(userRepository.findByUsername(registerRequestDto.getUsername()))
+                .thenReturn(Optional.of(mock(Users.class)));
 
-        assertThrows(UsernameAlreadyTakenException.class, () -> {
-            jwtAuthService.register(registerRequestDto);
-        });
+        assertThrows(UsernameAlreadyTakenException.class, () -> jwtAuthService.register(registerRequestDto));
     }
 
     @Test
     public void register_shouldThrowPasswordsDoNotMatchException_whenPasswordsDoNotMatch() {
-        RegisterRequestDto registerRequestDto = createRegisterRequestDto();
         registerRequestDto.setConfirmPassword("notMatchingPassword");
-        when(userRepository.findByUsername(registerRequestDto.getUsername())).thenReturn(Optional.empty());
+        when(userRepository.findByUsername(registerRequestDto.getUsername()))
+                .thenReturn(Optional.empty());
 
-        assertThrows(PasswordsDoNotMatchException.class, () -> {
-            jwtAuthService.register(registerRequestDto);
-        });
+        assertThrows(PasswordsDoNotMatchException.class, () -> jwtAuthService.register(registerRequestDto));
     }
 
     @Test
     public void register_shouldSaveUser_whenRegistrationIsValid() {
-        RegisterRequestDto registerRequestDto = createRegisterRequestDto();
-        Users newUser = new Users();
-
-        when(rolesRepository.findByName("ROLE_USER")).thenReturn(Optional.ofNullable(mock(Roles.class)));
-        when(userRepository.findByUsername(registerRequestDto.getUsername())).thenReturn(Optional.empty());
-        when(userRepository.save(any(Users.class))).thenReturn(newUser);
-
+        when(rolesRepository.findByName("ROLE_USER"))
+                .thenReturn(Optional.of(getUserRole()));
+        when(userRepository.findByUsername(registerRequestDto.getUsername()))
+                .thenReturn(Optional.empty());
+        when(userRepository.save(any(Users.class))).thenReturn(createUser());
         Users result = jwtAuthService.register(registerRequestDto);
 
         assertNotNull(result);
+        verify(userRepository).save(any(Users.class));
     }
 }
