@@ -9,14 +9,19 @@ import java.util.Collections;
 
 public class TestObjectUtils {
 
+    private static final String dummyFirstname = "John";
+    private static final String dummyLastname = "Doe";
+    private static final String dummyUsername = "user";
+    private static final String dummyUserPassword = "password";
+
     public static Roles getUserRole() {
         return new Roles(0, "ROLE_USER");
     }
 
     public static Users createUser(String username, String password) {
         return Users.builder()
-                .firstname("John")
-                .lastname("Doe")
+                .firstname(dummyFirstname)
+                .lastname(dummyLastname)
                 .username(username)
                 .password(new BCryptPasswordEncoder(12).encode(password))
                 .roles(Collections.singleton(getUserRole()))
@@ -24,16 +29,16 @@ public class TestObjectUtils {
     }
 
     public static Users createUser() {
-        return createUser("user", "user");
+        return createUser(dummyUsername, dummyUserPassword);
     }
 
     public static RegisterRequestDto createRegisterRequestDto() {
         return new RegisterRequestDto(
-                "John",
-                "Doe",
-                "user",
-                "password",
-                "password"
+                dummyFirstname,
+                dummyLastname,
+                dummyUsername,
+                dummyUserPassword,
+                dummyUserPassword
         );
     }
 }
