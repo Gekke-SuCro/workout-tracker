@@ -1,6 +1,6 @@
-package com.jaydenroeper.workouttracker.backend.security.validation;
+package com.jaydenroeper.workouttracker.backend.security.config;
 
-public class ValidationConstants {
+public class AuthValidationConstants {
 
     // Name Rules
     public static final int NAME_MIN = 2;
@@ -19,8 +19,4 @@ public class ValidationConstants {
     public static final int PASSWORD_MAX = 128;
     public static final String PASSWORD_REGEX = "^(?!.*\\s).*$";
     public static final String PASSWORD_MESSAGE = "Password cannot contain whitespaces.";
-
-    private ValidationConstants() {
-
-    }
 }

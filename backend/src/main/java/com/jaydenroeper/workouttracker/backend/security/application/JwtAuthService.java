@@ -5,11 +5,11 @@ import com.jaydenroeper.workouttracker.backend.security.application.exception.Us
 
 import com.jaydenroeper.workouttracker.backend.security.data.RolesRepository;
 import com.jaydenroeper.workouttracker.backend.security.domain.Roles;
+import com.jaydenroeper.workouttracker.backend.security.mapper.UsersMapper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.jaydenroeper.workouttracker.backend.security.data.UserRepository;
@@ -17,8 +17,9 @@ import com.jaydenroeper.workouttracker.backend.security.domain.Users;
 import com.jaydenroeper.workouttracker.backend.security.presentation.dto.LoginRequestDto;
 import com.jaydenroeper.workouttracker.backend.security.presentation.dto.RegisterRequestDto;
 
-import java.util.Collections;
-import java.util.Optional;
+import java.util.Set;
+
+import static com.jaydenroeper.workouttracker.backend.security.config.SecurityConstants.DEFAULT_ROLE;
 
 @Service
 public class JwtAuthService implements AuthService {
@@ -27,18 +28,19 @@ public class JwtAuthService implements AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
     private final RolesRepository rolesRepository;
-    private final BCryptPasswordEncoder encoder ;
+    private final UsersMapper userMapper;
 
     public JwtAuthService(
             AuthenticationManager authenticationManager,
             JwtTokenProvider jwtTokenProvider,
-            UserRepository userRepository, RolesRepository rolesRepository,
-            BCryptPasswordEncoder encoder) {
+            UserRepository userRepository,
+            RolesRepository rolesRepository,
+            UsersMapper userMapper) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
         this.userRepository = userRepository;
         this.rolesRepository = rolesRepository;
-        this.encoder = encoder;
+        this.userMapper = userMapper;
     }
 
     @Override
@@ -47,31 +49,22 @@ public class JwtAuthService implements AuthService {
                 new UsernamePasswordAuthenticationToken(loginRequestDto.username(), loginRequestDto.password())
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
+
         return jwtTokenProvider.generateToken(authentication);
     }
 
     @Override
     public Users register(RegisterRequestDto registerRequestDto) {
-        if (userRepository.findByUsername(registerRequestDto.getUsername()).isPresent()) {
+        if (userRepository.findByUsername(registerRequestDto.username()).isPresent()) {
             throw new UsernameAlreadyTakenException();
         }
-
-        if (!(registerRequestDto.getPassword().equals(registerRequestDto.getConfirmPassword()))) {
+        if (!(registerRequestDto.password().equals(registerRequestDto.confirmPassword()))) {
             throw new PasswordsDoNotMatchException();
         }
 
-        Optional<Roles> userRole = rolesRepository.findByName("ROLE_USER");
-        if (userRole.isEmpty()) {
-            throw new RuntimeException("User role not found!");
-        }
-
-        Users newUser = Users.builder()
-                .firstname(registerRequestDto.getFirstname())
-                .lastname(registerRequestDto.getLastname())
-                .username(registerRequestDto.getUsername())
-                .password(encoder.encode(registerRequestDto.getPassword()))
-                .roles(Collections.singleton(userRole.get()))
-                .build();
+        Roles userRole = rolesRepository.findByName(DEFAULT_ROLE)
+                .orElseThrow(() -> new RuntimeException("User role not found!"));
+        Users newUser = userMapper.toUser(registerRequestDto, Set.of(userRole));
 
         return userRepository.save(newUser);
     }
