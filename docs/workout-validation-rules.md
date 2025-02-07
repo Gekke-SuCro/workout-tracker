@@ -4,5 +4,6 @@
 - **Name**
   - Required.
   - Max length: 50 characters.
-  - Must be alphanumeric.
+  - Can only contain letters.
+  - Cannot start or end with a whitespace or contain double whitespaces.
 
