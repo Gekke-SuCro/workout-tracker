@@ -1,11 +1,13 @@
 package com.jaydenroeper.workouttracker.backend.security.presentation.dto;
 
 import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import static com.jaydenroeper.workouttracker.backend.security.validation.ValidationConstants.*;
 
 @Data
+@AllArgsConstructor
 public class RegisterRequestDto {
 
     @NotBlank(message = "First name is required")
