@@ -10,7 +10,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import com.jaydenroeper.workouttracker.backend.security.application.AuthService;
-import com.jaydenroeper.workouttracker.backend.security.application.dto.AuthResponseDto;
 import com.jaydenroeper.workouttracker.backend.security.presentation.dto.LoginRequestDto;
 import com.jaydenroeper.workouttracker.backend.security.presentation.dto.RegisterRequestDto;
 
@@ -30,9 +29,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequestDto loginRequestDto) {
         try {
-            String token = authService.verify(loginRequestDto);
-            AuthResponseDto authResponseDto = new AuthResponseDto(token);
-            return ResponseEntity.ok(authResponseDto);
+            return ResponseEntity.ok(authService.login(loginRequestDto));
         } catch (BadCredentialsException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body("Invalid username or password.");

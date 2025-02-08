@@ -1,5 +1,6 @@
 package com.jaydenroeper.workouttracker.backend.security.application;
 
+import com.jaydenroeper.workouttracker.backend.security.application.dto.LoginResponseDto;
 import com.jaydenroeper.workouttracker.backend.security.application.exception.PasswordsDoNotMatchException;
 import com.jaydenroeper.workouttracker.backend.security.application.exception.UsernameAlreadyTakenException;
 
@@ -44,13 +45,14 @@ public class JwtAuthService implements AuthService {
     }
 
     @Override
-    public String verify(LoginRequestDto loginRequestDto) {
+    public LoginResponseDto login(LoginRequestDto loginRequestDto) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequestDto.username(), loginRequestDto.password())
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
+        String token = jwtTokenProvider.generateToken(authentication);
 
-        return jwtTokenProvider.generateToken(authentication);
+        return new LoginResponseDto(loginRequestDto.username(), token);
     }
 
     @Override
