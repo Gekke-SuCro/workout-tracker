@@ -5,17 +5,16 @@ import {toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../../assets/styles/formStyles.css";
 import {useAuth} from "../../context/authContext";
-import {
-    USERNAME_MIN,
-    USERNAME_MAX,
-    USERNAME_REGEX,
-    PASSWORD_MIN,
-    PASSWORD_MAX,
-    PASSWORD_REGEX
-} from "../../constants/authValidationConstants";
 import AuthInput from "../components/auth-forms/AuthFormInput.jsx";
 import AuthFormLayout from "../components/auth-forms/AuthFormLayout.jsx";
 import AuthSubmitButton from "../components/auth-forms/AuthFormSubmitButton.jsx";
+import {
+    PASSWORD_MAX_LENGTH, PASSWORD_MIN_LENGTH, PASSWORD_REGEX, PASSWORD_REGEX_MESSAGE,
+    USERNAME_MAX_LENGTH,
+    USERNAME_MIN_LENGTH,
+    USERNAME_REGEX,
+    USERNAME_REGEX_MESSAGE
+} from "../../constants/authValidationConstants.js";
 
 const RegisterPage = () => {
     const {registerNewUser} = useAuth();
@@ -50,16 +49,16 @@ const RegisterPage = () => {
             <div className="flex flex-col gap-4 py-8">
                 <AuthInput label="Username*" id="username" type="text" register={register} validation={{
                     required: "Username is required",
-                    minLength: {value: USERNAME_MIN, message: `Must be at least ${USERNAME_MIN} characters.`},
-                    maxLength: {value: USERNAME_MAX, message: `Cannot exceed ${USERNAME_MAX} characters.`},
-                    pattern: {value: new RegExp(USERNAME_REGEX), message: "Invalid format."}
+                    minLength: {value: USERNAME_MIN_LENGTH, message: `Must be at least ${USERNAME_MIN_LENGTH} characters.`},
+                    maxLength: {value: USERNAME_MAX_LENGTH, message: `Cannot exceed ${USERNAME_MAX_LENGTH} characters.`},
+                    pattern: {value: new RegExp(USERNAME_REGEX), message: USERNAME_REGEX_MESSAGE}
                 }} error={errors.username} placeholder="johndoe1"/>
 
                 <AuthInput label="Password*" id="password" type="password" register={register} validation={{
                     required: "Password is required",
-                    minLength: {value: PASSWORD_MIN, message: `At least ${PASSWORD_MIN} characters.`},
-                    maxLength: {value: PASSWORD_MAX, message: `Cannot exceed ${PASSWORD_MAX} characters.`},
-                    pattern: {value: new RegExp(PASSWORD_REGEX), message: "No whitespace allowed."}
+                    minLength: {value: PASSWORD_MIN_LENGTH, message: `At least ${PASSWORD_MIN_LENGTH} characters.`},
+                    maxLength: {value: PASSWORD_MAX_LENGTH, message: `Cannot exceed ${PASSWORD_MAX_LENGTH} characters.`},
+                    pattern: {value: new RegExp(PASSWORD_REGEX), message: PASSWORD_REGEX_MESSAGE}
                 }} error={errors.password} placeholder="********"/>
 
                 <AuthInput label="Confirm Password*" id="confirmPassword" type="password" register={register}

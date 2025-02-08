@@ -17,6 +17,7 @@ export const AuthAPI = {
         password: password,
         confirmPassword: confirmPassword,
       });
+
       return response.data;
     } catch (error) {
       throw new Error(getErrorMessage(error));
