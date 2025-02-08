@@ -10,11 +10,9 @@ export const AuthAPI = {
     }
   },
 
-  register: async function (firstname, lastname, username, password, confirmPassword) {
+  register: async function (username, password, confirmPassword) {
     try {
       const response = await api.post("/auth/register", {
-        firstname: firstname,
-        lastname: lastname,
         username: username,
         password: password,
         confirmPassword: confirmPassword,
