@@ -10,7 +10,7 @@ import static com.jaydenroeper.workouttracker.backend.security.utils.RolesTestFa
 public class UsersTestFactory {
 
     public static final String DUMMY_USERNAME = "user";
-    public static final String DUMMY_PASSWORD = "password";
+    public static final String DUMMY_PASSWORD = "Str0ngP@ssword!";
     public static final Set<Roles> DUMMY_ROLES = Set.of(createRole());
 
     public static Users createUser(String username, String password, Set<Roles> roles) {

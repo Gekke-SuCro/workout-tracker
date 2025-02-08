@@ -21,11 +21,13 @@ public class UsersTest {
         return Stream.of(
                 null,
                 "",
-                "A".repeat(USERNAME_MIN_LENGTH) + " ",
-                " " + "A".repeat(USERNAME_MIN_LENGTH),
-                "A".repeat(USERNAME_MIN_LENGTH) + " " + "A",
                 "A".repeat(USERNAME_MIN_LENGTH - 1),
-                "A".repeat(USERNAME_MAX_LENGTH + 1)
+                "A".repeat(USERNAME_MAX_LENGTH + 1),
+                "123username",
+                "user.name",
+                "_username",
+                "user@name",
+                "username!"
         );
     }
 
@@ -51,6 +53,7 @@ public class UsersTest {
     void Should_CreateUser_When_ValidArguments() {
         assertNotNull(users);
         assertEquals(DUMMY_USERNAME, users.getUsername());
+        assertEquals(DUMMY_ROLES, users.getRoles());
     }
 
     @ParameterizedTest
