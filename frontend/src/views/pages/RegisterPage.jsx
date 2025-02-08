@@ -1,14 +1,12 @@
 import {useState} from "react";
 import {Link, useNavigate} from "react-router-dom";
 import {useForm} from "react-hook-form";
-import {ToastContainer, toast} from "react-toastify";
+import {toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../../assets/styles/formStyles.css";
 import {useAuth} from "../../context/authContext";
 import {
-    NAME_MAX,
-    NAME_MIN,
-    NAME_REGEX, PASSWORD_MAX, PASSWORD_MIN, PASSWORD_REGEX, PASSWORD_REQUIRED,
+    PASSWORD_MAX, PASSWORD_MIN, PASSWORD_REGEX, PASSWORD_REQUIRED,
     USERNAME_MAX,
     USERNAME_MIN,
     USERNAME_REGEX
@@ -32,8 +30,6 @@ const RegisterPage = () => {
 
         try {
             await registerNewUser(
-                data.firstname,
-                data.lastname,
                 data.username,
                 data.password,
                 data.confirmPassword,
@@ -47,7 +43,6 @@ const RegisterPage = () => {
                 autoClose: 3000,
             });
 
-            await new Promise((resolve) => setTimeout(resolve, 1000));
             navigate("/login");
         } catch (error) {
             console.error(error.message);
@@ -65,91 +60,19 @@ const RegisterPage = () => {
 
     return (
         <div className="mx-auto sm:max-w-md flex flex-col grow justify-center min-h-svh">
-            <ToastContainer
-                position="top-right"
-                autoClose={3000}
-                newestOnTop
-                closeOnClick
-                pauseOnHover
-                limit={3}
-            />
-
             <form
                 onSubmit={handleSubmit(onSubmit)}
                 className="p-8 md:shadow-xl md:p-16 rounded-xl"
             >
                 <h1 className="title mb-4">Sign Up</h1>
-
                 <p>
                     Already have an account?{" "}
                     <span className="text-blue-500">
-            <Link to="/login">Login</Link>
-          </span>
+                        <Link to="/login">Login</Link>
+                    </span>
                 </p>
 
                 <div className="flex flex-col gap-4 py-8">
-                    {/* Firstname Input */}
-                    <div>
-                        <label htmlFor="firstname" className="form-label">
-                            First name*
-                        </label>
-                        <input
-                            {...register("firstname", {
-                                required: "First name is required.",
-                                minLength: {
-                                    value: NAME_MIN,
-                                    message: `First name must contain at least ${NAME_MIN} characters.`,
-                                },
-                                maxLength: {
-                                    value: NAME_MAX,
-                                    message: `First name cannot exceed ${NAME_MAX} characters.`,
-                                },
-                                pattern: {
-                                    value: new RegExp(NAME_REGEX),
-                                    message: "First name must contain only letters without spaces.",
-                                },
-                            })}
-                            type="text"
-                            id="firstname"
-                            placeholder="John"
-                            className={`form-input-box ${errors.firstname && "error"}`}
-                        />
-                        {errors.firstname && (
-                            <p className="form-error-label">{errors.firstname.message}</p>
-                        )}
-                    </div>
-
-                    {/* Lastname Input */}
-                    <div>
-                        <label htmlFor="lastname" className="form-label">
-                            Last name*
-                        </label>
-                        <input
-                            {...register("lastname", {
-                                required: "Last name is required.",
-                                minLength: {
-                                    value: NAME_MIN,
-                                    message: `Last name must contain at least ${NAME_MIN} characters.`,
-                                },
-                                maxLength: {
-                                    value: NAME_MAX,
-                                    message: `Last name cannot exceed ${NAME_MAX} characters.`,
-                                },
-                                pattern: {
-                                    value: new RegExp(NAME_REGEX),
-                                    message: "Last name must contain only letters without spaces.",
-                                },
-                            })}
-                            type="text"
-                            id="lastname"
-                            placeholder="Doe"
-                            className={`form-input-box ${errors.lastname && "error"}`}
-                        />
-                        {errors.lastname && (
-                            <p className="form-error-label">{errors.lastname.message}</p>
-                        )}
-                    </div>
-
                     {/* Username Input */}
                     <div>
                         <label htmlFor="username" className="form-label">
