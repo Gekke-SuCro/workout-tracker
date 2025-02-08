@@ -19,8 +19,6 @@ public class UsersMapper {
 
     public Users toUser(RegisterRequestDto registerRequestDto, Set<Roles> roles) {
         return new Users(
-                registerRequestDto.firstname(),
-                registerRequestDto.lastname(),
                 registerRequestDto.username(),
                 encoder.encode(registerRequestDto.password()),
                 roles

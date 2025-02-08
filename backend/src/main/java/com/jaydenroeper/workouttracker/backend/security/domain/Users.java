@@ -14,7 +14,7 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
-import static com.jaydenroeper.workouttracker.backend.security.config.AuthValidationConstants.*;
+import static com.jaydenroeper.workouttracker.backend.security.config.ValidationConstants.*;
 
 @Entity
 @Table(name = "users")
@@ -23,12 +23,6 @@ public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
-    @Column(nullable = false)
-    private String firstName;
-
-    @Column(nullable = false)
-    private String lastName;
 
     @Column(nullable = false, unique = true)
     private String username;
@@ -42,47 +36,33 @@ public class Users {
 
     protected Users() {}
 
-    public Users(String firstName, String lastName, String username, String password, Set<Roles> roles) {
-        validateName(firstName);
-        validateName(lastName);
+    public Users(String username, String password, Set<Roles> roles) {
         validateUsername(username);
-        validateUsername(lastName);
         validatePassword(password);
         if (roles == null || roles.isEmpty()) {
             throw new IllegalArgumentException("User roles cannot be null or empty.");
         }
 
-        this.firstName = firstName;
-        this.lastName = lastName;
         this.username = username;
         this.password = password;
         this.roles = roles;
     }
 
-    private void validateName(String name) {
-        if (name == null || name.length() < NAME_MIN || name.length() > NAME_MAX) {
-            throw new IllegalArgumentException("First name must be between " + NAME_MIN + " and " + NAME_MAX + " characters.");
-        }
-        if (!name.matches(NAME_REGEX)) {
-            throw new IllegalArgumentException(NAME_MESSAGE);
-        }
-    }
-
     private void validateUsername(String username) {
-        if (username == null || username.length() < USERNAME_MIN || username.length() > USERNAME_MAX) {
-            throw new IllegalArgumentException("Username must be between " + USERNAME_MIN + " and " + USERNAME_MAX + " characters.");
+        if (username == null || username.length() < USERNAME_MIN_LENGTH || username.length() > USERNAME_MAX_LENGTH) {
+            throw new IllegalArgumentException(USERNAME_LENGTH_MESSAGE);
         }
         if (!username.matches(USERNAME_REGEX)) {
-            throw new IllegalArgumentException(USERNAME_MESSAGE);
+            throw new IllegalArgumentException(USERNAME_REGEX_MESSAGE);
         }
     }
 
     private void validatePassword(String password) {
-        if (password == null || password.length() < PASSWORD_MIN || password.length() > PASSWORD_MAX) {
-            throw new IllegalArgumentException("Password must be between " + PASSWORD_MIN + " and " + PASSWORD_MAX + " characters.");
+        if (password == null || password.length() < PASSWORD_MIN_LENGTH || password.length() > PASSWORD_MAX_LENGTH) {
+            throw new IllegalArgumentException(PASSWORD_LENGTH_MESSAGE);
         }
         if (!password.matches(PASSWORD_REGEX)) {
-            throw new IllegalArgumentException(PASSWORD_MESSAGE);
+            throw new IllegalArgumentException(PASSWORD_REGEX_MESSAGE);
         }
     }
 
