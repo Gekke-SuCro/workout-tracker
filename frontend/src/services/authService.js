@@ -17,20 +17,17 @@ const getToken = () => {
 const AuthService = {
     login: async function (username, password) {
         try {
-            const {accesToken} = await AuthAPI.login(username, password);
-            storeToken(accesToken);
-
-            return accesToken;
+            const response = await AuthAPI.login(username, password);
+            storeToken(response.token);
+            return response.username;
         } catch (error) {
             throw new Error(error.message);
         }
     },
 
-    register: async function (firstname, lastname, username, password, confirmPassword) {
+    register: async function (username, password, confirmPassword) {
         try {
             const authResponse = await AuthAPI.register(
-                firstname,
-                lastname,
                 username,
                 password,
                 confirmPassword
@@ -47,10 +44,6 @@ const AuthService = {
 
     isAuthenticated: function () {
         return !!getToken();
-    },
-
-    getToken: function () {
-        return getToken();
     },
 };
 
