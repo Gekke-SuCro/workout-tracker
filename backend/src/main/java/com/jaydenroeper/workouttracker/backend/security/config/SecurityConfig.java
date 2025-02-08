@@ -1,4 +1,4 @@
-package com.jaydenroeper.workouttracker.backend.security;
+package com.jaydenroeper.workouttracker.backend.security.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
