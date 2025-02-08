@@ -1,16 +1,13 @@
 package com.jaydenroeper.workouttracker.backend.security.application;
 
-import com.jaydenroeper.workouttracker.backend.security.application.dto.LoginResponseDto;
 import com.jaydenroeper.workouttracker.backend.security.application.exception.PasswordsDoNotMatchException;
 import com.jaydenroeper.workouttracker.backend.security.application.exception.UsernameAlreadyTakenException;
-
-import com.jaydenroeper.workouttracker.backend.security.data.RolesRepository;
-import com.jaydenroeper.workouttracker.backend.security.domain.Roles;
-import com.jaydenroeper.workouttracker.backend.security.mapper.UsersMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.jaydenroeper.workouttracker.backend.security.data.UserRepository;
@@ -18,55 +15,47 @@ import com.jaydenroeper.workouttracker.backend.security.domain.Users;
 import com.jaydenroeper.workouttracker.backend.security.presentation.dto.LoginRequestDto;
 import com.jaydenroeper.workouttracker.backend.security.presentation.dto.RegisterRequestDto;
 
-import java.util.Set;
-
-import static com.jaydenroeper.workouttracker.backend.security.config.SecurityConstants.DEFAULT_ROLE;
-
 @Service
 public class JwtAuthService implements AuthService {
 
-    private final AuthenticationManager authenticationManager;
-    private final JwtTokenProvider jwtTokenProvider;
-    private final UserRepository userRepository;
-    private final RolesRepository rolesRepository;
-    private final UsersMapper userMapper;
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
-    public JwtAuthService(
-            AuthenticationManager authenticationManager,
-            JwtTokenProvider jwtTokenProvider,
-            UserRepository userRepository,
-            RolesRepository rolesRepository,
-            UsersMapper userMapper) {
-        this.authenticationManager = authenticationManager;
-        this.jwtTokenProvider = jwtTokenProvider;
-        this.userRepository = userRepository;
-        this.rolesRepository = rolesRepository;
-        this.userMapper = userMapper;
-    }
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
     @Override
-    public LoginResponseDto login(LoginRequestDto loginRequestDto) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequestDto.username(), loginRequestDto.password())
-        );
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String token = jwtTokenProvider.generateToken(authentication);
+    public String verify(LoginRequestDto loginRequestDto) {
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                loginRequestDto.username(),
+                loginRequestDto.password()));
 
-        return new LoginResponseDto(loginRequestDto.username(), token);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        return jwtTokenProvider.generateToken(authentication);
     }
 
     @Override
     public Users register(RegisterRequestDto registerRequestDto) {
-        if (userRepository.findByUsername(registerRequestDto.username()).isPresent()) {
+        if (userRepository.findByUsername(registerRequestDto.getUsername()).isPresent()) {
             throw new UsernameAlreadyTakenException();
         }
-        if (!(registerRequestDto.password().equals(registerRequestDto.confirmPassword()))) {
+
+        if (!(registerRequestDto.getPassword().equals(registerRequestDto.getConfirmPassword()))) {
             throw new PasswordsDoNotMatchException();
         }
 
-        Roles userRole = rolesRepository.findByName(DEFAULT_ROLE)
-                .orElseThrow(() -> new RuntimeException("User role not found!"));
-        Users newUser = userMapper.toUser(registerRequestDto, Set.of(userRole));
+        Users newUser = Users.builder()
+                .firstname(registerRequestDto.getFirstname())
+                .lastname(registerRequestDto.getLastname())
+                .username(registerRequestDto.getUsername())
+                .password(encoder.encode(registerRequestDto.getPassword()))
+                .build();
 
         return userRepository.save(newUser);
     }
