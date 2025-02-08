@@ -1,7 +1,7 @@
 import { createContext, useContext, useState } from "react";
 import AuthService from "../services/authService";
 
-const AuthContext = createContext();
+const AuthContext = createContext(undefined);
 
 // eslint-disable-next-line react/prop-types
 export const AuthProvider = ({ children }) => {
@@ -14,10 +14,11 @@ export const AuthProvider = ({ children }) => {
     if (succes) {
       setIsAuthenticated(true);
     }
+    return succes;
   };
 
-  const registerNewUser = async (firstname, lastname, username, password, confirmPassword) => {
-    await AuthService.register(firstname, lastname, username, password, confirmPassword);
+  const registerNewUser = async (username, password, confirmPassword) => {
+    return await AuthService.register(username, password, confirmPassword);
   };
 
   const logout = () => {
