@@ -1,60 +1,52 @@
 package com.jaydenroeper.workouttracker.backend.workout.domain;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.time.LocalDate;
+import java.util.stream.Stream;
 
+import static com.jaydenroeper.workouttracker.backend.workout.config.ValidationConstants.*;
 import static com.jaydenroeper.workouttracker.backend.workout.utils.DateTestUtils.getLocalDateOfTomorrow;
-import static com.jaydenroeper.workouttracker.backend.workout.utils.WorkoutTestFactory.createWorkout;
+import static com.jaydenroeper.workouttracker.backend.workout.utils.WorkoutTestFactory.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class WorkoutTest {
 
-    private final String workoutNameExceedingMaxLength = "Upper, Middle and Lower Chest Workout Exercises Day"; // 51 char name
+    private static Stream<String> provideInvalidWorkoutNames() {
+        return Stream.of(
+                null,
+                "",
+                "A".repeat(WORKOUT_NAME_MIN_LENGTH - 1),
+                "A".repeat(WORKOUT_NAME_MAX_LENGTH + 1),
+                " " + "A".repeat(WORKOUT_NAME_MIN_LENGTH),
+                "A".repeat(WORKOUT_NAME_MIN_LENGTH) + " "
+        );
+    }
 
     @Test
     public void Should_CreateWorkout_When_ValidArguments() {
-        String workoutName = "Incline Chest Press";
-        LocalDate today = LocalDate.now();
-        Workout workout = createWorkout(workoutName, today);
+        Workout workout = createWorkout(DUMMY_WORKOUT_NAME, DUMMY_WORKOUT_DATE);
 
         assertNotNull(workout);
-        assertEquals(workoutName, workout.getName());
-        assertEquals(today, workout.getDate());
+        assertEquals(DUMMY_WORKOUT_NAME, workout.getName());
+        assertEquals(DUMMY_WORKOUT_DATE, workout.getDate());
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideInvalidWorkoutNames")
+    void Should_ThrowException_When_WorkoutNameIsInvalid(String name) {
+        assertThrows(IllegalArgumentException.class, () -> createWorkout(name, DUMMY_WORKOUT_DATE));
     }
 
     @Test
-    public void Should_ThrowIllegalArgumentException_When_WorkoutNameIsEmpty() {
-        assertThrows(IllegalArgumentException.class, () -> createWorkout(""));
-    }
-
-    @Test
-    public void Should_ThrowIllegalArgumentException_When_WorkoutNameExceeds50Chars() {
-        assertThrows(IllegalArgumentException.class, () -> createWorkout(workoutNameExceedingMaxLength));
-    }
-
-    @Test
-    public void Should_ThrowIllegalArgumentException_When_WorkoutNameContainsSpecialCharachters() {
-        assertThrows(IllegalArgumentException.class, () -> createWorkout("@W0rk04t"));
-   }
-
-    @Test
-    public void Should_ThrowIllegalArgumentException_When_WorkoutNameStartsWithWhitespace() {
-        assertThrows(IllegalArgumentException.class, () -> createWorkout(" Workout"));
-    }
-
-    @Test
-    public void Should_ThrowIllegalArgumentException_When_WorkoutNameContainsDoubleWhitespaces() {
-        assertThrows(IllegalArgumentException.class, () -> createWorkout("Workout  Day"));
-    }
-
-    @Test
-    public void Should_ThrowIllegalArgumentException_When_WorkoutNameEndsWithWhitespace() {
-        assertThrows(IllegalArgumentException.class, () -> createWorkout("Workout "));
+    public void Should_ThrowIllegalArgumentException_When_WorkoutDateIsNull() {
+        assertThrows(IllegalArgumentException.class, () -> createWorkout(DUMMY_WORKOUT_NAME, null));
     }
 
     @Test
     public void Should_ThrowIllegalArgumentException_When_WorkoutDateIsInFuture() {
-        assertThrows(IllegalArgumentException.class, () -> createWorkout(getLocalDateOfTomorrow()));
+        assertThrows(IllegalArgumentException.class, () -> createWorkout(DUMMY_WORKOUT_NAME, getLocalDateOfTomorrow()));
     }
 }
