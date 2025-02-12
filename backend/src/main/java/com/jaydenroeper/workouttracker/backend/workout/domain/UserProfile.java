@@ -15,12 +15,19 @@ public class UserProfile {
 
     private List<Workout> workouts;
 
-
     public UserProfile(Users user, double weight, double length) {
         this.user = user;
         this.weight = weight;
         this.length = length;
         this.workouts = new ArrayList<>();
+    }
+
+    public String getUsername() {
+        return user.getUsername();
+    }
+
+    public double getWeight() {
+        return weight;
     }
 
     public void addWorkout(Workout workout) {
