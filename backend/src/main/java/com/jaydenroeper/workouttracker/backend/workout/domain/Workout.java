@@ -1,6 +1,8 @@
 package com.jaydenroeper.workouttracker.backend.workout.domain;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.jaydenroeper.workouttracker.backend.workout.config.ValidationConstants.*;
 
@@ -13,12 +15,15 @@ public class Workout {
     private String name;
     private LocalDate date;
 
+    private List<WorkoutExercise> exercises;
+
     public Workout(String name, LocalDate date) {
         validateWorkoutName(name);
         validateWorkoutDate(date);
 
         this.name = name;
         this.date = date;
+        this.exercises = new ArrayList<>();
     }
 
     private void validateWorkoutName(String name) {
@@ -47,8 +52,19 @@ public class Workout {
         return date;
     }
 
+    public List<WorkoutExercise> getExercises() {
+        return exercises;
+    }
+
     public void setUserProfile(UserProfile userProfile) {
         this.userProfile = userProfile;
+    }
+
+    public void addExercise(WorkoutExercise exercise) {
+        if (exercises.contains(exercise)) {
+            return;
+        }
+        exercises.add(exercise);
     }
 
     @Override
@@ -58,6 +74,7 @@ public class Workout {
         sb.append("Workout{")
                 .append("name=").append(name)
                 .append(", date=").append(date)
+                .append(", exercises=").append(exercises)
                 .append("}");
 
         return sb.toString();
