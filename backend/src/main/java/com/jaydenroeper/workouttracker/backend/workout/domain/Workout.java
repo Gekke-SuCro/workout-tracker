@@ -7,6 +7,9 @@ import static com.jaydenroeper.workouttracker.backend.workout.config.ValidationC
 public class Workout {
 
     private Long id;
+
+    private UserProfile userProfile;
+
     private String name;
     private LocalDate date;
 
@@ -19,7 +22,7 @@ public class Workout {
     }
 
     private void validateWorkoutName(String name) {
-        if (name == null || name.length() < WORKOUT_NAME_MIN_LENGTH || name.length() > WORKOUT_NAME_MAX_LENGTH) {
+        if (name == null || name.isEmpty() || name.length() > WORKOUT_NAME_MAX_LENGTH) {
             throw new IllegalArgumentException(WORKOUT_NAME_LENGTH_MESSAGE);
         }
         if (!name.matches(WORKOUT_NAME_REGEX)) {
@@ -42,5 +45,21 @@ public class Workout {
 
     public LocalDate getDate() {
         return date;
+    }
+
+    public void setUserProfile(UserProfile userProfile) {
+        this.userProfile = userProfile;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("Workout{")
+                .append("name=").append(name)
+                .append(", date=").append(date)
+                .append("}");
+
+        return sb.toString();
     }
 }
