@@ -4,9 +4,11 @@ public class Exercise {
 
     private Long id;
     private String name;
+    private ExerciseValueType type;
 
-    public Exercise(String name) {
+    public Exercise(String name, ExerciseValueType type) {
         this.name = name;
+        this.type = type;
     }
 
     public String getName() {

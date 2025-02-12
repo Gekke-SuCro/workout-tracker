@@ -2,13 +2,9 @@ package com.jaydenroeper.workouttracker.backend;
 
 import com.jaydenroeper.workouttracker.backend.security.domain.Roles;
 import com.jaydenroeper.workouttracker.backend.security.domain.Users;
-import com.jaydenroeper.workouttracker.backend.workout.domain.Exercise;
-import com.jaydenroeper.workouttracker.backend.workout.domain.UserProfile;
-import com.jaydenroeper.workouttracker.backend.workout.domain.Workout;
-import com.jaydenroeper.workouttracker.backend.workout.domain.WorkoutExercise;
+import com.jaydenroeper.workouttracker.backend.workout.domain.*;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Set;
 
 public class WorkoutDomainTest {
@@ -17,19 +13,21 @@ public class WorkoutDomainTest {
         Users user = new Users("user", "password", Set.of(new Roles("ROLE_USER")));
         UserProfile userProfile = new UserProfile(user, 62.7, 178);
 
-        Exercise exercise = new Exercise("Incline Chest Press");
-        Exercise exercise2 = new Exercise("Weighted Dips");
-        Exercise exercise3 = new Exercise("Decline Chest Press");
+        Exercise chestPress = new Exercise("Chest Press", ExerciseValueType.WEIGHT);
+        Exercise pullUps = new Exercise("Pull Ups", ExerciseValueType.BODY_WEIGHT);
+        Exercise weightedDips = new Exercise("Weighted Dips", ExerciseValueType.WEIGHT);
+        Exercise planking = new Exercise("Planking", ExerciseValueType.SECONDS);
 
+//        Create workout
+        Workout upperBodyWorkout = new Workout("Upper Body Workout", LocalDate.now());
+        userProfile.addWorkout(upperBodyWorkout);
 
-        Workout workout = new Workout("Chest Workout", LocalDate.now());
-        userProfile.addWorkout(workout);
+        WorkoutExercise chestPressExercise = new WorkoutExercise(upperBodyWorkout, chestPress);
+        chestPressExercise.addSet(new ExerciseSetBuilder().weight(27.5).reps(7).build());
+        chestPressExercise.addSet(new ExerciseSetBuilder().weight(25).reps(6).build());
+        chestPressExercise.addSet(new ExerciseSetBuilder().weight(20).reps(12).build());
+        upperBodyWorkout.addExercise(chestPressExercise);
 
-        List<Exercise> wEx = List.of(exercise, exercise2, exercise3);
-        for (Exercise ex : wEx) {
-            workout.addExercise(new WorkoutExercise(workout, ex));
-        }
-
-        System.out.println(workout.getExercises());
+        System.out.println(upperBodyWorkout.getExercises());
     }
 }
