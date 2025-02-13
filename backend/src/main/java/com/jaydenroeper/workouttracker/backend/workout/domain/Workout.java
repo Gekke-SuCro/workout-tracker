@@ -89,6 +89,7 @@ public class Workout {
             return;
         }
         exercises.add(exercise);
+        exercise.setWorkout(this);
     }
 
     @Override

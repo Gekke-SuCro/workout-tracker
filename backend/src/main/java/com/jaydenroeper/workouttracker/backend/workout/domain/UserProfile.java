@@ -1,6 +1,5 @@
 package com.jaydenroeper.workouttracker.backend.workout.domain;
 
-import com.jaydenroeper.workouttracker.backend.security.domain.Users;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -14,11 +13,7 @@ public class UserProfile {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
-    @MapsId
-    @JoinColumn(name = "user_id")
-    private Users user;
-
+    String username;
     private double weight;
     private double length;
 
@@ -28,8 +23,8 @@ public class UserProfile {
     protected UserProfile() {
     }
 
-    public UserProfile(Users user, double weight, double length) {
-        this.user = user;
+    public UserProfile(String username, double weight, double length) {
+        this.username = username;
         this.weight = weight;
         this.length = length;
         this.workouts = new ArrayList<>();
@@ -40,11 +35,7 @@ public class UserProfile {
     }
 
     public String getUsername() {
-        return user.getUsername();
-    }
-
-    public Users getUser() {
-        return user;
+        return username;
     }
 
     public double getWeight() {

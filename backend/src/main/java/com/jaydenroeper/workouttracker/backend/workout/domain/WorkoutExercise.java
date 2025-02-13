@@ -27,8 +27,7 @@ public class WorkoutExercise {
     protected WorkoutExercise() {
     }
 
-    public WorkoutExercise(Workout workout, Exercise exercise) {
-        this.workout = workout;
+    public WorkoutExercise(Exercise exercise) {
         this.exercise = exercise;
         this.sets = new ArrayList<>();
     }
@@ -45,6 +44,10 @@ public class WorkoutExercise {
         return workout;
     }
 
+    public void setWorkout(Workout workout) {
+        this.workout = workout;
+    }
+
     public List<ExerciseSet> getSets() {
         return sets;
     }
@@ -54,6 +57,7 @@ public class WorkoutExercise {
             return;
         }
         sets.add(exerciseSet);
+        exerciseSet.setWorkoutExercise(this);
     }
 
     @Override

@@ -15,15 +15,15 @@ public class ExerciseSet {
     private WorkoutExercise workoutExercise;
 
     private int reps;
-    private double weigth;
+    private double weight;
     private double time;
 
     protected ExerciseSet() {
     }
 
-    public ExerciseSet(int reps, double weigth, double time) {
+    public ExerciseSet(int reps, double weight, double time) {
         this.reps = reps;
-        this.weigth = weigth;
+        this.weight = weight;
         this.time = time;
     }
 
@@ -35,8 +35,8 @@ public class ExerciseSet {
         return reps;
     }
 
-    public double getWeigth() {
-        return weigth;
+    public double getWeight() {
+        return weight;
     }
 
     public double getTime() {
@@ -55,7 +55,7 @@ public class ExerciseSet {
     public String toString() {
         return "ExerciseSet{" +
                 "reps=" + reps +
-                ", weight=" + weigth +
+                ", weight=" + weight +
                 ", time=" + time +
                 "}";
     }
