@@ -1,21 +1,36 @@
 package com.jaydenroeper.workouttracker.backend.workout.domain;
 
+import jakarta.persistence.*;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.jaydenroeper.workouttracker.backend.workout.config.ValidationConstants.*;
 
+@Entity
+@Table(name = "workout")
 public class Workout {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne
+    @JoinColumn(name = "user_profile_id", nullable = false)
     private UserProfile userProfile;
 
+    @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
     private LocalDate date;
 
+    @OneToMany(mappedBy = "workout", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<WorkoutExercise> exercises;
+
+    protected Workout() {
+    }
 
     public Workout(String name, LocalDate date) {
         validateWorkoutName(name);
@@ -44,6 +59,19 @@ public class Workout {
         }
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public UserProfile getUserProfile() {
+        return userProfile;
+    }
+
+    public void setUserProfile(UserProfile userProfile) {
+        this.userProfile = userProfile;
+    }
+
+
     public String getName() {
         return name;
     }
@@ -56,10 +84,6 @@ public class Workout {
         return exercises;
     }
 
-    public void setUserProfile(UserProfile userProfile) {
-        this.userProfile = userProfile;
-    }
-
     public void addExercise(WorkoutExercise exercise) {
         if (exercises.contains(exercise)) {
             return;
@@ -69,14 +93,10 @@ public class Workout {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-
-        sb.append("Workout{")
-                .append("name=").append(name)
-                .append(", date=").append(date)
-                .append(", exercises=").append(exercises)
-                .append("}");
-
-        return sb.toString();
+        return "Workout{" +
+                "name=" + name +
+                ", date=" + date +
+                ", exercises=" + exercises +
+                "}";
     }
 }

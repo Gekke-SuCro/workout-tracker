@@ -34,7 +34,8 @@ public class Users {
     @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Set<Roles> roles;
 
-    protected Users() {}
+    protected Users() {
+    }
 
     public Users(String username, String password, Set<Roles> roles) {
         validateUsername(username);
@@ -64,6 +65,10 @@ public class Users {
         if (!password.matches(PASSWORD_REGEX)) {
             throw new IllegalArgumentException(PASSWORD_REGEX_MESSAGE);
         }
+    }
+
+    public long getId() {
+        return id;
     }
 
     public String getUsername() {

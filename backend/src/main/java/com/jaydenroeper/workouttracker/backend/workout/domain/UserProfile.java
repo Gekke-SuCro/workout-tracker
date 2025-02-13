@@ -1,19 +1,32 @@
 package com.jaydenroeper.workouttracker.backend.workout.domain;
 
 import com.jaydenroeper.workouttracker.backend.security.domain.Users;
+import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
+@Table(name = "user_profile")
 public class UserProfile {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @OneToOne
+    @MapsId
+    @JoinColumn(name = "user_id")
     private Users user;
+
     private double weight;
     private double length;
 
+    @OneToMany(mappedBy = "userProfile", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Workout> workouts;
+
+    protected UserProfile() {
+    }
 
     public UserProfile(Users user, double weight, double length) {
         this.user = user;
@@ -22,12 +35,24 @@ public class UserProfile {
         this.workouts = new ArrayList<>();
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public String getUsername() {
         return user.getUsername();
     }
 
+    public Users getUser() {
+        return user;
+    }
+
     public double getWeight() {
         return weight;
+    }
+
+    public double getLength() {
+        return length;
     }
 
     public void addWorkout(Workout workout) {
@@ -41,14 +66,10 @@ public class UserProfile {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-
-        sb.append("UserProfile{")
-                .append("weight=").append(weight)
-                .append(", length=").append(length)
-                .append(", workouts=").append(workouts)
-                .append("}");
-
-        return sb.toString();
+        return "UserProfile{" +
+                "weight=" + weight +
+                ", length=" + length +
+                ", workouts=" + workouts +
+                "}";
     }
 }
