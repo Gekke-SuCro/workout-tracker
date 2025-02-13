@@ -24,7 +24,7 @@ public class WorkoutController {
 
     @GetMapping
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<?> loadAllWorkouts(@AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<?> loadWorkoutsByUser(@AuthenticationPrincipal UserDetails userDetails) {
         try {
             return ResponseEntity.ok(workoutService.findAllWorkoutsByUsername(userDetails.getUsername()));
         } catch (Exception e) {
