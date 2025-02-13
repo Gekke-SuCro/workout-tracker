@@ -21,7 +21,7 @@ public class WorkoutMapper {
         }
 
         return new WorkoutResponseDto(
-                workout.getUserProfile().getUsername(),
+                workout.getId(),
                 workout.getName(),
                 workout.getDate(),
                 exercises

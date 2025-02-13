@@ -24,9 +24,9 @@ public class WorkoutController {
 
     @GetMapping
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<?> loadAllWorkouts() {
+    public ResponseEntity<?> loadAllWorkouts(@AuthenticationPrincipal UserDetails userDetails) {
         try {
-            return ResponseEntity.ok(workoutService.findAllWorkouts());
+            return ResponseEntity.ok(workoutService.findAllWorkoutsByUsername(userDetails.getUsername()));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
@@ -35,7 +35,6 @@ public class WorkoutController {
     @PostMapping
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<?> createWorkout(@AuthenticationPrincipal UserDetails userDetails, @RequestBody WorkoutRequestDto workoutRequestDto) {
-        System.out.println(userDetails.getUsername());
         try {
             workoutService.createWorkout(userDetails.getUsername(), workoutRequestDto);
             return ResponseEntity.status(HttpStatus.CREATED).body("Workout successfully created");

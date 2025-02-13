@@ -51,8 +51,9 @@ public class WorkoutService {
         workoutRepository.save(workout);
     }
 
-    public List<WorkoutResponseDto> findAllWorkouts() {
+    public List<WorkoutResponseDto> findAllWorkoutsByUsername(String username) {
         return workoutRepository.findAll().stream()
+                .filter(workout -> workout.getUserProfile().getUsername().equals(username))
                 .map(WorkoutMapper::toDto)
                 .toList();
     }
