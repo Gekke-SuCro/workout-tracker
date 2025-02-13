@@ -6,6 +6,7 @@ import com.jaydenroeper.workouttracker.backend.workout.data.ExerciseRepository;
 import com.jaydenroeper.workouttracker.backend.workout.data.UserProfileRepository;
 import com.jaydenroeper.workouttracker.backend.workout.data.WorkoutRepository;
 import com.jaydenroeper.workouttracker.backend.workout.domain.*;
+import com.jaydenroeper.workouttracker.backend.workout.mapper.WorkoutExerciseMapper;
 import com.jaydenroeper.workouttracker.backend.workout.mapper.WorkoutMapper;
 import com.jaydenroeper.workouttracker.backend.workout.presentation.dto.ExerciseSetRequestDto;
 import com.jaydenroeper.workouttracker.backend.workout.presentation.dto.WorkoutExerciseRequestDto;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -31,23 +33,27 @@ public class WorkoutService {
     }
 
     public void createWorkout(String username, WorkoutRequestDto workoutRequestDto) {
-        Optional<UserProfile> optionalUserProfile = userProfileRepository.findByUsername(username);
-        if (optionalUserProfile.isEmpty()) {
-            throw new UsernameNotFoundException("User not found");
+        UserProfile userProfile = userProfileRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+//        Load existing exercises by exercise request names
+        Set<String> exerciseNames = workoutRequestDto.exercises().stream()
+                .map(WorkoutExerciseRequestDto::name)
+                .collect(Collectors.toSet());
+        List<Exercise> exercises = exerciseRepository.findAllByNameIn(exerciseNames);
+
+        if (exercises.size() != exerciseNames.size()) {
+            throw new ExerciseNotFoundException("One or more exercises not found.");
         }
 
-        UserProfile userProfile = optionalUserProfile.get();
-        Workout workout = WorkoutMapper.toWorkout(workoutRequestDto, exerciseRepository);
+        Workout workout = WorkoutMapper.toWorkout(workoutRequestDto, exercises);
         userProfile.addWorkout(workout);
         workoutRepository.save(workout);
     }
 
     public List<WorkoutResponseDto> findAllWorkouts() {
-        List<WorkoutResponseDto> workoutResponseDtos = new ArrayList<>();
-        for (Workout workout : workoutRepository.findAll()) {
-            workoutResponseDtos.add(WorkoutMapper.toDto(workout));
-        }
-
-        return workoutResponseDtos;
+        return workoutRepository.findAll().stream()
+                .map(WorkoutMapper::toDto)
+                .toList();
     }
 }

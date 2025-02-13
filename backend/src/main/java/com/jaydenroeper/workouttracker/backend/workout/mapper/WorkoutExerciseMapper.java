@@ -30,16 +30,11 @@ public class WorkoutExerciseMapper {
         );
     }
 
-    public static WorkoutExercise toWorkoutExercise(WorkoutExerciseRequestDto dto, ExerciseRepository exerciseRepository) {
-        Optional<Exercise> exercise = exerciseRepository.findByName(dto.name());
-        if (exercise.isEmpty()) {
-            throw new ExerciseNotFoundException();
-        }
-        WorkoutExercise workoutExercise = new WorkoutExercise(exercise.get());
+    public static WorkoutExercise toWorkoutExercise(WorkoutExerciseRequestDto dto, Exercise exercise) {
+        WorkoutExercise workoutExercise = new WorkoutExercise(exercise);
         for (ExerciseSetRequestDto es : dto.sets()) {
             workoutExercise.addSet(ExerciseSetMapper.toExerciseSet(es));
         }
-
         return workoutExercise;
     }
 }
