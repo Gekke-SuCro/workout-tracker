@@ -5,9 +5,9 @@ import {toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../../assets/styles/formStyles.css";
 import {useAuth} from "../../context/authContext";
-import AuthInput from "../components/auth-forms/AuthFormInput.jsx";
-import AuthFormLayout from "../components/auth-forms/AuthFormLayout.jsx";
-import AuthSubmitButton from "../components/auth-forms/AuthFormSubmitButton.jsx";
+import ReactHookInput from "../components/forms/input/ReactHookInput.jsx";
+import AuthFormLayout from "../components/forms/AuthFormLayout.jsx";
+import AuthSubmitButton from "../components/forms/AuthFormSubmitButton.jsx";
 
 const LoginPage = () => {
     const {login} = useAuth();
@@ -40,12 +40,12 @@ const LoginPage = () => {
             <p>Not a member? <Link to="/register" className="text-blue-500">Sign Up</Link></p>
 
             <div className="flex flex-col gap-4 py-8">
-                <AuthInput label="Username" id="username" type="text" register={register}
-                           validation={{required: "Username is required"}} error={errors.username}
-                           placeholder="johndoe1"/>
-                <AuthInput label="Password" id="password" type="password" register={register}
-                           validation={{required: "Password is required"}} error={errors.password}
-                           placeholder="********"/>
+                <ReactHookInput label="Username" id="username" type="text" register={register}
+                                validation={{required: "Username is required"}} error={errors.username}
+                                placeholder="johndoe1"/>
+                <ReactHookInput label="Password" id="password" type="password" register={register}
+                                validation={{required: "Password is required"}} error={errors.password}
+                                placeholder="********"/>
             </div>
 
             <AuthSubmitButton loading={loading} text="Login"/>

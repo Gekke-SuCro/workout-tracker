@@ -1,6 +1,6 @@
 import * as PropTypes from "prop-types";
 
-const AuthInput = ({label, id, type, register, validation, error, placeholder}) => {
+const ReactHookInput = ({label, id, type, register, validation, error, placeholder, defaultValue}) => {
     return (
         <div>
             <label htmlFor={id} className="form-label">{label}</label>
@@ -9,6 +9,7 @@ const AuthInput = ({label, id, type, register, validation, error, placeholder}) 
                 type={type}
                 id={id}
                 placeholder={placeholder}
+                value={defaultValue ? defaultValue : undefined}
                 className={`form-input-box ${error && "error"}`}
             />
             {error && <p className="form-error-label">{error.message}</p>}
@@ -16,7 +17,7 @@ const AuthInput = ({label, id, type, register, validation, error, placeholder}) 
     );
 }
 
-AuthInput.propTypes = {
+ReactHookInput.propTypes = {
     label: PropTypes.string.isRequired,
     id: PropTypes.string.isRequired,
     type: PropTypes.string.isRequired,
@@ -24,6 +25,7 @@ AuthInput.propTypes = {
     validation: PropTypes.any.isRequired,
     error: PropTypes.object,
     placeholder: PropTypes.string.isRequired,
+    value: PropTypes.any,
 }
 
-export default AuthInput;
+export default ReactHookInput;

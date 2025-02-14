@@ -11,6 +11,7 @@ import LoginPage from "./views/pages/LoginPage";
 import "./index.css";
 import RegisterPage from "./views/pages/RegisterPage";
 import MainLayout from "./views/MainLayout.jsx";
+import LogWorkoutPage from "./views/pages/LogWorkout.jsx";
 
 // eslint-disable-next-line react-refresh/only-export-components, react/prop-types
 const AuthGuard = ({children}) => {
@@ -36,6 +37,10 @@ const router = createBrowserRouter([
                         <HomePage/>
                     </AuthGuard>
                 )
+            },
+            {
+                path: "/create-workout",
+                element: <LogWorkoutPage />
             },
             {
                 path: "/login",
