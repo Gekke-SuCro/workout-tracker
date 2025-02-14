@@ -3,6 +3,9 @@ import CreateWorkoutFormLayout from "../components/forms/CreateWorkoutFormLayout
 import ReactHookInput from "../components/forms/input/ReactHookInput.jsx";
 import AuthSubmitButton from "../components/forms/AuthFormSubmitButton.jsx";
 import {useState} from "react";
+import {WorkoutAPI} from "../../api/WorkoutAPI.js";
+import {toast} from "react-toastify";
+import {useNavigate} from "react-router-dom";
 
 const LogWorkoutPage = () => {
     const {
@@ -10,12 +13,29 @@ const LogWorkoutPage = () => {
         handleSubmit,
         formState: {errors}
     } = useForm({mode: "onBlur"});
+
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
+
 
     const onSubmit = async (data) => {
         setLoading(true);
-        console.log(data);
-        setLoading(false);
+        const createWorkoutToast = toast.loading("Logging workout...");
+
+        try {
+            await WorkoutAPI.create(data.workoutName, data.workoutDate, []);
+            toast.update(createWorkoutToast, {
+                render: `'${data.workoutName}' workout logged`,
+                type: "success",
+                isLoading: false,
+                autoClose: 3000
+            });
+            navigate("/");
+        } catch (error) {
+            toast.update(createWorkoutToast, {render: error.message, type: "error", isLoading: false, autoClose: 3000});
+        } finally {
+            setLoading(false);
+        }
     }
 
     return (
