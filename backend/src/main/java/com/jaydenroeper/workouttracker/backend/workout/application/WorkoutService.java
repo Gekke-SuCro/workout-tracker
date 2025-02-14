@@ -6,9 +6,7 @@ import com.jaydenroeper.workouttracker.backend.workout.data.ExerciseRepository;
 import com.jaydenroeper.workouttracker.backend.workout.data.UserProfileRepository;
 import com.jaydenroeper.workouttracker.backend.workout.data.WorkoutRepository;
 import com.jaydenroeper.workouttracker.backend.workout.domain.*;
-import com.jaydenroeper.workouttracker.backend.workout.mapper.WorkoutExerciseMapper;
 import com.jaydenroeper.workouttracker.backend.workout.mapper.WorkoutMapper;
-import com.jaydenroeper.workouttracker.backend.workout.presentation.dto.ExerciseSetRequestDto;
 import com.jaydenroeper.workouttracker.backend.workout.presentation.dto.WorkoutExerciseRequestDto;
 import com.jaydenroeper.workouttracker.backend.workout.presentation.dto.WorkoutRequestDto;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -36,12 +34,11 @@ public class WorkoutService {
         UserProfile userProfile = userProfileRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-//        Load existing exercises by exercise request names
+//        Check if requested exercises exist in the database.
         Set<String> exerciseNames = workoutRequestDto.exercises().stream()
                 .map(WorkoutExerciseRequestDto::name)
                 .collect(Collectors.toSet());
         List<Exercise> exercises = exerciseRepository.findAllByNameIn(exerciseNames);
-
         if (exercises.size() != exerciseNames.size()) {
             throw new ExerciseNotFoundException("One or more exercises not found.");
         }

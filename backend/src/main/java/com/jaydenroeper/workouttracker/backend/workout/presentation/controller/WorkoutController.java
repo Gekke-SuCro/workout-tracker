@@ -2,7 +2,6 @@ package com.jaydenroeper.workouttracker.backend.workout.presentation.controller;
 
 import com.jaydenroeper.workouttracker.backend.workout.application.WorkoutService;
 import com.jaydenroeper.workouttracker.backend.workout.application.exception.ExerciseNotFoundException;
-import com.jaydenroeper.workouttracker.backend.workout.domain.UserProfile;
 import com.jaydenroeper.workouttracker.backend.workout.presentation.dto.WorkoutRequestDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
