@@ -5,7 +5,7 @@ const CreateWorkoutFormLayout = ({title, children, onSubmit}) => {
         <div className="mx-auto sm:max-w-md mt-24">
             <form
                 onSubmit={onSubmit}
-                className="p-8 md:shadow-xl md:p-16 rounded-xl"
+                className="p-8"
             >
                 <h1 className="title mb-4">{title}</h1>
                 {children}
